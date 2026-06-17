@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArQa — FAQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold:        #B8965A;
+  --gold-light:  #D4AF7A;
+  --gold-dim:    rgba(184,150,90,0.10);
+  --gold-border: rgba(184,150,90,0.25);
+  --black:       #0f0f0f;
+  --off-black:   #1a1a1a;
+  --gray:        #6b6b6b;
+  --white:       #ffffff;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+/* ── ANNOUNCEMENT BAR ── */
+.announcement-bar {
+  background: var(--white); color: var(--black); text-align: center;
+  padding: 11px 20px; font-size: 11px; font-weight: 400;
+  letter-spacing: 3px; text-transform: uppercase; overflow: hidden;
+  border-bottom: 1px solid #e8e8e8;
+}
+.announcement-bar .scroll-text { display: inline-flex; gap: 80px; animation: marquee 24s linear infinite; white-space: nowrap; }
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #e8e8e8;
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700;
+  letter-spacing: 8px; text-transform: uppercase;
+  color: var(--black); text-decoration: none;
+  -webkit-text-fill-color: var(--black);
+}
+.back-link {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--gray); text-decoration: none;
+  font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--gold); }
+.back-link svg { transition: transform 0.2s; }
+.back-link:hover svg { transform: translateX(-3px); }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  background: var(--black);
+  padding: 64px 32px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(184,150,90,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(184,150,90,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.page-hero-label {
+  font-size: 9px; letter-spacing: 6px; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 14px; font-weight: 400;
+}
+.page-hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700; letter-spacing: 8px; text-transform: uppercase;
+  color: var(--white); margin-bottom: 14px;
+}
+.page-hero-sub {
+  font-size: 12px; color: rgba(255,255,255,0.45);
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 300;
+}
+
+.gold-line { height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+
+/* ── FAQ WRAPPER ── */
+.faq-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 32px 96px;
+}
+
+.faq-category-label {
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px;
+  margin-top: 44px;
+}
+.faq-category-label:first-child { margin-top: 0; }
+
+/* ── ACCORDION ── */
+.faq-item {
+  border-bottom: 1px solid #e8e8e8;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.faq-item.visible { opacity: 1; transform: none; }
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--black);
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.faq-question:hover { color: var(--gold); }
+
+.faq-toggle-icon {
+  width: 26px; height: 26px;
+  border: 1px solid #d0d0d0;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--gray);
+  transition: all 0.25s ease;
+}
+.faq-item.open .faq-toggle-icon {
+  background: var(--black);
+  border-color: var(--black);
+  color: var(--white);
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-answer-inner {
+  padding: 0 0 22px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.85;
+  font-weight: 300;
+  max-width: 90%;
+}
+
+footer {
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  padding: 28px 32px;
+  text-align: center;
+}
+.footer-bottom { font-size: 10px; color: #999; letter-spacing: 1px; text-transform: uppercase; }
+
+@media (max-width: 600px) {
+  .header-inner { padding: 0 16px; }
+  .faq-wrapper { padding: 40px 16px 72px; }
+  .page-hero { padding: 48px 20px 40px; }
+}
+</style>
+</head>
+<body>
+
+<div class="announcement-bar">
+  <div class="scroll-text">
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; New Collection In ✨</span>
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; New Collection In ✨</span>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <a href="shop.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Shop
+    </a>
+    <a href="index.html" class="brand-name">ArQa</a>
+    <div style="width: 120px;"></div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-label">ArQa — Help Center</div>
+  <div class="page-hero-title">FAQ</div>
+  <div class="page-hero-sub">Quick answers to common questions</div>
+</div>
+<div class="gold-line"></div>
+
+<div class="faq-wrapper">
+
+  <div class="faq-category-label">Orders & Payment</div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      How do I place an order?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Simply browse our collections, add your favorite pieces to the cart, and head to checkout. Fill in your delivery details and confirm — no account needed.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      What payment methods do you accept?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">We currently accept Cash on Delivery (COD) only. You pay when your order arrives at your door — no upfront payment required.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Can I change or cancel my order after placing it?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Yes, as long as your order hasn't been shipped yet. Message us on WhatsApp with your order number as soon as possible and we'll help you out.</div>
+    </div>
+  </div>
+
+  <div class="faq-category-label">Shipping & Delivery</div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      How long does delivery take?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Orders typically arrive within 3–5 business days from confirmation, depending on your governorate. Remote areas may take slightly longer.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Do you deliver outside Cairo?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Yes! We deliver to all governorates across Egypt. Shipping fees and timelines may vary slightly depending on your location.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      How can I track my order?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Reach out to us on WhatsApp with your order number and we'll give you a live update on where your shipment stands.</div>
+    </div>
+  </div>
+
+  <div class="faq-category-label">Products & Sizing</div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Are your products waterproof or tarnish-resistant?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">We recommend avoiding prolonged exposure to water, perfume, or lotion to keep your pieces looking their best for longer. Check each product description for specific care instructions.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      How do I know what size to order?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Each product page includes a size guide where available. If you're unsure, message us on WhatsApp or Instagram with the item name and we'll help you pick the right fit.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Will the item look exactly like the photos?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">We do our best to photograph items accurately, but slight color variations may occur due to lighting and screen settings.</div>
+    </div>
+  </div>
+
+  <div class="faq-category-label">Returns & Exchanges</div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      What is your return policy?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Returns and exchanges are accepted within 7 days of delivery, provided the item is unused, in its original packaging, and tags are still attached. Visit our Return & Exchange Policy page for full details.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      How do I start a return or exchange?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">Head to our Return & Exchange page, fill in your order details and reason, and submit. We'll be in touch within 24–48 hours to guide you through the next steps.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question" onclick="toggleFaq(this)">
+      Who covers the shipping cost for returns?
+      <span class="faq-toggle-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">For exchanges, ArQa covers the shipping cost of the replacement item. For returns due to personal preference, the customer covers return shipping.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="gold-line"></div>
+<footer>
+  <div class="footer-bottom">© 2026 ArQa · Developed by @engy_mostaffa  |  @webgy_</div>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+
+  document.querySelectorAll('.faq-item.open').forEach(open => {
+    if (open !== item) {
+      open.classList.remove('open');
+      open.querySelector('.faq-answer').style.maxHeight = null;
+    }
+  });
+
+  if (isOpen) {
+    item.classList.remove('open');
+    answer.style.maxHeight = null;
+  } else {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
+const reveals = document.querySelectorAll('.faq-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 40);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArQa Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold:        #B8965A;
+  --gold-light:  #D4AF7A;
+  --gold-dim:    rgba(184,150,90,0.12);
+  --gold-border: rgba(184,150,90,0.25);
+  --black:       #0f0f0f;
+  --off-black:   #1a1a1a;
+  --gray:        #6b6b6b;
+  --light-gray:  #f5f5f5;
+  --white:       #ffffff;
+  --sidebar:     #0f0f0f;
+  --red:         #c0392b;
+  --green:       #27ae60;
+  --grad:        linear-gradient(135deg, #B8965A 0%, #D4AF7A 100%);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f5f5f5;
+  color: var(--black);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+/* ── AUTH ── */
+#authScreen {
+  position: fixed; inset: 0;
+  background: var(--black);
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+
+.auth-card {
+  background: var(--white);
+  border-radius: 0;
+  padding: 48px 40px;
+  width: 100%; max-width: 380px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.auth-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px; font-weight: 700; letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--black);
+  background: none; -webkit-text-fill-color: var(--black);
+  text-align: center; margin-bottom: 4px;
+}
+
+.auth-subtitle {
+  text-align: center; color: var(--gray);
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 36px; font-weight: 400;
+}
+
+.auth-input {
+  width: 100%; padding: 13px 16px;
+  border: 1px solid #d0d0d0; border-radius: 0;
+  font-size: 13px; font-family: 'Inter', sans-serif;
+  background: var(--light-gray); margin-bottom: 12px;
+  outline: none; transition: border 0.2s; font-weight: 300;
+}
+.auth-input:focus { border-color: var(--gold); box-shadow: none; }
+
+.auth-btn {
+  width: 100%; padding: 14px;
+  background: var(--black); color: var(--white);
+  border: none; border-radius: 0;
+  font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.auth-btn:hover { background: var(--gold); transform: translateY(-1px); }
+
+.auth-error {
+  color: var(--red); font-size: 12px;
+  text-align: center; margin-top: 10px; display: none;
+}
+
+/* ── LAYOUT ── */
+#appLayout { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px; background: var(--sidebar); color: white;
+  flex-shrink: 0; display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebar-logo {
+  padding: 28px 20px 6px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700; letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--white); -webkit-text-fill-color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 16px;
+}
+
+.sidebar-subtitle {
+  font-size: 9px; color: var(--gold);
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 10px 20px 14px;
+}
+
+.sidebar-nav { flex: 1; padding: 4px 0; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; cursor: pointer; transition: all 0.2s;
+  font-size: 11px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); border-left: 2px solid transparent;
+}
+.nav-item:hover { color: white; background: rgba(255,255,255,0.04); }
+.nav-item.active {
+  color: var(--gold); background: rgba(184,150,90,0.08);
+  border-left-color: var(--gold);
+}
+
+.nav-icon { font-size: 16px; }
+
+.nav-badge {
+  margin-left: auto; background: var(--gold); color: white;
+  font-size: 9px; font-weight: 600; padding: 2px 7px;
+  border-radius: 0; min-width: 20px; text-align: center; letter-spacing: 0.5px;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-footer a {
+  display: block; color: rgba(255,255,255,0.4); font-size: 11px;
+  text-decoration: none; margin-bottom: 6px; transition: color 0.2s;
+  letter-spacing: 1px;
+}
+.sidebar-footer a:hover { color: var(--gold); }
+
+.logout-btn {
+  width: 100%; padding: 10px;
+  background: rgba(192,57,43,0.1); color: var(--red);
+  border: 1px solid rgba(192,57,43,0.2); border-radius: 0;
+  cursor: pointer; font-size: 10px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase; transition: background 0.2s;
+}
+.logout-btn:hover { background: rgba(192,57,43,0.2); }
+
+/* ── MAIN ── */
+.main { flex: 1; overflow-x: hidden; }
+
+.topbar {
+  background: var(--white); border-bottom: 1px solid #e8e8e8;
+  padding: 16px 28px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+}
+.page-subtitle { font-size: 11px; color: var(--gray); margin-top: 2px; letter-spacing: 1px; }
+
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 10px 20px; border-radius: 0;
+  font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s; border: none;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.btn-primary { background: var(--black); color: white; }
+.btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
+
+.btn-outline {
+  background: white; color: var(--black);
+  border: 1px solid #d0d0d0;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-danger { background: #fee2e2; color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+.btn-danger:hover { background: #fecaca; }
+
+.btn-sm { padding: 6px 14px; font-size: 9px; }
+
+.content { padding: 24px 28px; }
+
+/* ── STATS ── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--white); border-radius: 0; padding: 20px;
+  border: 1px solid #e8e8e8; box-shadow: none;
+  transition: all 0.2s;
+}
+.stat-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
+
+.stat-icon { font-size: 28px; margin-bottom: 10px; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--gold); }
+.stat-label { font-size: 10px; color: var(--gray); margin-top: 4px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* ── CARD ── */
+.card {
+  background: var(--white); border-radius: 0;
+  border: 1px solid #e8e8e8; box-shadow: none;
+  overflow: hidden; margin-bottom: 20px;
+}
+.card-header {
+  padding: 16px 20px; border-bottom: 1px solid #e8e8e8;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+
+/* ── TABLE ── */
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  padding: 10px 16px; background: #fafafa;
+  text-align: left; font-size: 9px; font-weight: 600;
+  letter-spacing: 2px; color: var(--gray);
+  text-transform: uppercase; border-bottom: 1px solid #e8e8e8;
+}
+tbody td { padding: 13px 16px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fafaf8; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px; border-radius: 0;
+  font-size: 9px; font-weight: 600; gap: 4px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.badge-new        { background: rgba(184,150,90,0.12); color: var(--gold); }
+.badge-processing { background: #fef3c7; color: #92400e; }
+.badge-shipped    { background: #dbeafe; color: #1d4ed8; }
+.badge-delivered  { background: #dcfce7; color: #166534; }
+.badge-cancelled  { background: #fee2e2; color: var(--red); }
+.badge-pending    { background: #fef3c7; color: #92400e; }
+.badge-resolved   { background: #dcfce7; color: #166534; }
+
+/* ── PRODUCT THUMB ── */
+.product-thumb {
+  width: 52px; height: 52px; border-radius: 0;
+  object-fit: cover; background: var(--light-gray);
+  border: 1px solid #e8e8e8;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 400; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white); border-radius: 0;
+  width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+  border: 1px solid #e8e8e8;
+  animation: popUp 0.25s ease;
+}
+@keyframes popUp { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-head {
+  padding: 18px 24px; border-bottom: 1px solid #e8e8e8;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; background: white; z-index: 5;
+}
+
+.modal-body { padding: 24px; }
+
+/* ── FORMS ── */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { margin-bottom: 14px; }
+
+.form-label {
+  display: block; font-size: 10px; font-weight: 500;
+  color: var(--gray); margin-bottom: 6px;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid #d0d0d0; border-radius: 0;
+  font-size: 13px; font-family: 'Inter', sans-serif;
+  background: var(--light-gray); outline: none;
+  transition: border 0.2s; font-weight: 300;
+}
+.form-input:focus { border-color: var(--gold); box-shadow: none; }
+
+.form-textarea { min-height: 80px; resize: vertical; }
+
+.form-select {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid #d0d0d0; border-radius: 0;
+  font-size: 13px; background: var(--light-gray);
+  cursor: pointer; outline: none; font-family: 'Inter', sans-serif;
+  transition: border 0.2s;
+}
+.form-select:focus { border-color: var(--gold); }
+
+/* ── IMAGES UPLOAD ── */
+.images-upload-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+
+.img-upload-slot { width: 96px; height: 96px; position: relative; flex-shrink: 0; }
+
+.img-upload-preview {
+  width: 100%; height: 100%; object-fit: cover;
+  border: 1px solid #e8e8e8; border-radius: 0; display: block;
+}
+
+.img-upload-remove {
+  position: absolute; top: -7px; right: -7px;
+  width: 20px; height: 20px;
+  background: var(--red); border: none; color: white;
+  font-size: 10px; cursor: pointer; border-radius: 0;
+  display: flex; align-items: center; justify-content: center; z-index: 2;
+}
+.img-upload-remove:hover { opacity: 0.85; }
+
+.img-cover-badge {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.6); color: white; font-size: 9px;
+  text-align: center; padding: 3px; letter-spacing: 1px; text-transform: uppercase;
+}
+
+.img-add-slot {
+  width: 96px; height: 96px;
+  border: 1px dashed #d0d0d0; border-radius: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px; cursor: pointer; color: var(--gray);
+  font-size: 10px; text-align: center; letter-spacing: 1px;
+  transition: all 0.2s; flex-shrink: 0; position: relative;
+}
+.img-add-slot:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.img-add-slot input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+.img-url-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.img-url-row .form-input { flex: 1; }
+
+/* ── SECTIONS ── */
+.section-page { display: none; }
+.section-page.active { display: block; }
+
+/* ── TOAST ── */
+.admin-toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--black); color: white; padding: 12px 20px;
+  border-radius: 0; border-left: 3px solid var(--gold);
+  font-size: 12px; font-weight: 400; letter-spacing: 0.5px;
+  z-index: 999;
+  transform: translateY(80px); opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+}
+.admin-toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 768px) {
+  .sidebar { width: 200px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">ArQa</div>
+    <div class="auth-subtitle">Admin Dashboard — Owner Access Only</div>
+    <input class="auth-input" type="email" id="authEmail" placeholder="Admin email" onkeydown="if(event.key==='Enter')login()">
+    <input class="auth-input" type="password" id="authPass" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+    <button class="auth-btn" onclick="login()">Sign In →</button>
+    <div class="auth-error" id="authError">❌ Wrong credentials. Try again.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appLayout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="sidebar-logo">ArQa</div>
+      <div class="sidebar-subtitle">ADMIN PANEL</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showSection('products')"><span class="nav-icon">🛍️</span> Products</div>
+      <div class="nav-item" onclick="showSection('orders')">
+        <span class="nav-icon">📦</span> Orders
+        <span class="nav-badge" id="newOrdersBadge">0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('returns')">
+        <span class="nav-icon">🔄</span> Returns
+        <span class="nav-badge" id="newReturnsBadge">0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('reviews')"><span class="nav-icon">⭐</span> Reviews</div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="shop.html" target="_blank">🌐 View Website</a>
+      <a href="returnpolicy.html" target="_blank">🔄 Returns Page</a>
+      <a href="index.html" target="_blank">📱 Landing Page</a>
+      <button class="logout-btn" onclick="logout()" style="margin-top:8px;">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-subtitle" id="pageSubtitle">Welcome back, ArQa Owner 👑</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" id="topActionBtn" onclick="openAddProduct()" style="display:none;">+ Add Product</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section-page active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="stat-orders">0</div><div class="stat-label">Total Orders</div></div>
+          <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="stat-revenue">0</div><div class="stat-label">Total Revenue (EGP)</div></div>
+          <div class="stat-card"><div class="stat-icon">🛍️</div><div class="stat-value" id="stat-products">0</div><div class="stat-label">Products</div></div>
+          <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-value" id="stat-returns">0</div><div class="stat-label">Return Requests</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🆕 Recent Orders</div></div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody id="recentOrdersTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="section-page" id="sec-products">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">All Products</div>
+            <button class="btn btn-primary btn-sm" onclick="openAddProduct()">+ Add Product</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+              <tbody id="productsTbl"><tr><td colspan="6" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="section-page" id="sec-orders">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">All Orders</div>
+            <select class="form-select" style="width:auto;padding:6px 12px;font-size:13px;" onchange="filterOrders(this.value)">
+              <option value="">All Status</option>
+              <option value="new">New</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Order #</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="ordersTbl"><tr><td colspan="8" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETURNS -->
+      <div class="section-page" id="sec-returns">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Return & Exchange Requests</div></div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Type</th><th>Name</th><th>Phone</th><th>Order #</th><th>Reason</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="returnsTbl"><tr><td colspan="8" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="section-page" id="sec-reviews">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Customer Reviews</div></div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Review</th><th>Rating</th><th>Date</th><th>Action</th></tr></thead>
+              <tbody id="reviewsTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="card-title" id="modalTitle">Add Product</div>
+      <button class="btn btn-outline btn-sm" onclick="closeProductModal()">✕ Cancel</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+
+      <div class="form-group">
+        <label class="form-label">Product Name *</label>
+        <input class="form-input" id="pName" placeholder="product name">
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="pCategory">
+            <option value="">Select...</option>
+            <option value="rings">Rings</option>
+            <option value="necklaces">Necklaces</option>
+            <option value="bracelets">Bracelets</option>
+            <option value="earrings">Earrings</option>
+            <option value="hand-chains">Hand Chains</option>
+            <option value="sets">Sets</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Stock Quantity *</label>
+          <input class="form-input" id="pStock" type="number" min="0" placeholder="10">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="form-label">Price (EGP) *</label>
+          <input class="form-input" id="pPrice" type="number" placeholder="150">
+        </div>
+        <div>
+          <label class="form-label">Original Price (offer badge)</label>
+          <input class="form-input" id="pOldPrice" type="number" placeholder="200">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input form-textarea" id="pDesc" placeholder="Product description..."></textarea>
+      </div>
+
+      <!-- ── IMAGES UPLOAD ── -->
+      <div class="form-group">
+        <label class="form-label">Product Images (up to 5)</label>
+        <div class="images-upload-grid" id="imagesGrid"></div>
+        <div class="img-url-row">
+          <input class="form-input" id="urlInput" placeholder="Or paste image URL here...">
+          <button class="btn btn-outline btn-sm" type="button" onclick="addImageFromURL()">+ URL</button>
+        </div>
+        <div style="font-size:11px;color:var(--gray);margin-top:4px;">📸 Upload directly from your device or paste a URL</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveProduct()" style="width:100%;justify-content:center;">
+        💾 Save Product
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN TOAST -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script src="config.js"></script>
+<script>
+// ================================================================
+// STATE
+// ================================================================
+let allOrders   = [];
+let allReturns  = [];
+let allProducts = [];
+let allReviews  = [];
+let db          = null;
+let currentImages = []; // مصفوفة الصور الحالية (base64 أو URL)
+
+// ================================================================
+// AUTH — Firebase
+// ================================================================
+async function login() {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass  = document.getElementById('authPass').value;
+  try {
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+    const { getAuth, signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
+    const cfg = window.ARQA_FIREBASE_CONFIG;
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    await signInWithEmailAndPassword(getAuth(app), email, pass);
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('appLayout').style.display = 'flex';
+    initApp();
+  } catch(e) {
+    document.getElementById('authError').style.display = 'block';
+  }
+}
+
+async function logout() {
+  try {
+    const { getAuth, signOut } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
+    await signOut(getAuth());
+  } catch(e) {}
+  document.getElementById('appLayout').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authPass').value = '';
+}
+
+// ================================================================
+// INIT
+// ================================================================
+async function initApp() {
+  await initFirebase();
+  loadAll();
+}
+
+async function initFirebase() {
+  try {
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+    const cfg = window.ARQA_FIREBASE_CONFIG;
+    if (!cfg || cfg.apiKey === "YOUR_API_KEY") { useDemoData(); return; }
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    db = getFirestore(app);
+  } catch(e) { useDemoData(); }
+}
+
+function useDemoData() {
+  adminToast('⚠️ Demo mode — configure Firebase in config.js');
+  allOrders = [
+    { id:'o1', orderNumber:'ARQ-A1B2', customer:{name:'Sara Ahmed',phone:'0100000001',governorate:'Cairo',city:'Nasr City',address:'شارع النصر ١٢'}, items:[{name:'Heart Enamel Ring',qty:1,price:150,subtotal:150}], subtotal:150, shipping:80, total:230, status:'new', timestamp:new Date().toISOString() },
+    { id:'o2', orderNumber:'ARQ-C3D4', customer:{name:'Nour Hassan',phone:'0110000002',governorate:'Giza',city:'Dokki',address:'شارع الدقي ٥'}, items:[{name:'Sun Charm Necklace',qty:2,price:190,subtotal:380}], subtotal:380, shipping:80, total:460, status:'processing', timestamp:new Date(Date.now()-86400000).toISOString() },
+  ];
+  allReturns = [
+    { id:'r1', type:'exchange', name:'Mona Ali', phone:'0120000001', orderNumber:'ARQ-X1Y2', reason:'Wrong size', notes:'', timestamp:new Date().toISOString(), status:'pending' },
+  ];
+  allReviews = [
+    { id:'rv1', name:'Nour', text:'The delivery was super fast and the packaging was so cute!', rating:5, timestamp:new Date().toISOString() },
+  ];
+  allProducts = [
+    { id:'p1', name:'Floral Pearl Ring', category:'rings', price:150, oldPrice:200, stock:2, images:['https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=200&q=80'], description:'A delicate floral ring.' },
+    { id:'p2', name:'Heart Enamel Ring', category:'rings', price:150, oldPrice:250, stock:4, images:['https://images.unsplash.com/photo-1519741497674-611481863552?w=200&q=80'], description:'Heart-shaped ring.' },
+  ];
+  renderAll();
+}
+
+async function loadAll() {
+  if (!db) return;
+  try {
+    const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+    const [oSnap, pSnap, retSnap, revSnap] = await Promise.all([
+      getDocs(query(collection(db,'orders'), orderBy('timestamp','desc'))),
+      getDocs(collection(db,'products')),
+      getDocs(query(collection(db,'returnRequests'), orderBy('timestamp','desc'))),
+      getDocs(query(collection(db,'reviews'), orderBy('timestamp','desc'))),
+    ]);
+    allOrders   = oSnap.docs.map(d => ({id:d.id,...d.data()}));
+    allProducts = pSnap.docs.map(d => ({id:d.id,...d.data()}));
+    allReturns  = retSnap.docs.map(d => ({id:d.id,...d.data()}));
+    allReviews  = revSnap.docs.map(d => ({id:d.id,...d.data()}));
+    renderAll();
+  } catch(e) { console.log('Load error:',e); useDemoData(); }
+}
+
+function renderAll() {
+  renderDashboard();
+  renderProducts();
+  renderOrders();
+  renderReturns();
+  renderReviews();
+}
+
+// ================================================================
+// DASHBOARD
+// ================================================================
+function renderDashboard() {
+  const revenue    = allOrders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0);
+  const newOrders  = allOrders.filter(o=>o.status==='new').length;
+  const newReturns = allReturns.filter(r=>r.status==='pending').length;
+  document.getElementById('stat-orders').textContent   = allOrders.length;
+  document.getElementById('stat-revenue').textContent  = revenue.toLocaleString();
+  document.getElementById('stat-products').textContent = allProducts.length;
+  document.getElementById('stat-returns').textContent  = allReturns.length;
+  document.getElementById('newOrdersBadge').textContent  = newOrders;
+  document.getElementById('newReturnsBadge').textContent = newReturns;
+  const recent = allOrders.slice(0,5);
+  document.getElementById('recentOrdersTbl').innerHTML = recent.length
+    ? recent.map(o=>`<tr>
+        <td><strong>${o.orderNumber}</strong></td>
+        <td>${o.customer?.name}</td>
+        <td>${o.items?.length} item(s)</td>
+        <td style="font-weight:600;color:var(--g1);">${o.total} EGP</td>
+        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">No orders yet</td></tr>';
+}
+
+// ================================================================
+// PRODUCTS
+// ================================================================
+function renderProducts() {
+  document.getElementById('productsTbl').innerHTML = allProducts.length
+    ? allProducts.map(p=>`<tr>
+        <td><img class="product-thumb" src="${p.images?.[0]||''}" alt="" onerror="this.style.display='none'"></td>
+        <td><strong>${p.name}</strong></td>
+        <td><span style="text-transform:capitalize;color:var(--g1);font-size:12px;">${p.category}</span></td>
+        <td>${p.oldPrice?`<span style="text-decoration:line-through;color:#9ca3af;font-size:12px;">${p.oldPrice}</span> `:''}<strong>${p.price} EGP</strong></td>
+        <td><span style="color:${p.stock<=3?'#ef4444':'#22c55e'};font-weight:600;">${p.stock}</span></td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick='editProduct(${JSON.stringify(p)})'>✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')" style="margin-left:6px;">🗑️</button>
+        </td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:#9ca3af;">No products yet</td></tr>';
+}
+
+// ================================================================
+// IMAGES — Upload من الجهاز أو URL
+// ================================================================
+function renderImagesGrid() {
+  const grid = document.getElementById('imagesGrid');
+  let html = currentImages.map((src,i) => `
+    <div class="img-upload-slot">
+      <img class="img-upload-preview" src="${src}" alt=""
+           onerror="this.src='https://via.placeholder.com/100x100?text=?'">
+      <button class="img-upload-remove" onclick="removeImage(${i})">✕</button>
+      ${i===0 ? '<div class="img-cover-badge">Cover</div>' : ''}
+    </div>`).join('');
+  if (currentImages.length < 5) {
+    html += `<div class="img-add-slot">
+      <input type="file" accept="image/*" multiple onchange="handleFileUpload(event)">
+      <span style="font-size:1.6rem;">📸</span>
+      <span>Upload</span>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function handleFileUpload(e) {
+  const files     = Array.from(e.target.files);
+  const remaining = 5 - currentImages.length;
+  const toLoad    = files.slice(0, remaining);
+  let loaded = 0;
+  toLoad.forEach(file => {
+    // Compress + convert to base64
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas  = document.createElement('canvas');
+        const maxSize = 800;
+        let w = img.width, h = img.height;
+        if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+        if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        currentImages.push(canvas.toDataURL('image/jpeg', 0.75));
+        loaded++;
+        if (loaded === toLoad.length) renderImagesGrid();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function addImageFromURL() {
+  const input = document.getElementById('urlInput');
+  const url   = input.value.trim();
+  if (!url) return;
+  if (currentImages.length >= 5) { adminToast('Max 5 images'); return; }
+  currentImages.push(url);
+  input.value = '';
+  renderImagesGrid();
+}
+
+function removeImage(i) {
+  currentImages.splice(i, 1);
+  renderImagesGrid();
+}
+
+// ================================================================
+// PRODUCT CRUD
+// ================================================================
+function openAddProduct() {
+  document.getElementById('modalTitle').textContent = 'Add Product';
+  document.getElementById('editId').value = '';
+  ['pName','pDesc'].forEach(id => document.getElementById(id).value = '');
+  ['pPrice','pOldPrice','pStock'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pCategory').value = '';
+  currentImages = [];
+  renderImagesGrid();
+  document.getElementById('productModal').classList.add('open');
+}
+
+function editProduct(p) {
+  document.getElementById('modalTitle').textContent = 'Edit Product';
+  document.getElementById('editId').value   = p.id;
+  document.getElementById('pName').value     = p.name;
+  document.getElementById('pCategory').value = p.category;
+  document.getElementById('pPrice').value    = p.price;
+  document.getElementById('pOldPrice').value = p.oldPrice || '';
+  document.getElementById('pStock').value    = p.stock;
+  document.getElementById('pDesc').value     = p.description || '';
+  currentImages = [...(p.images || [])];
+  renderImagesGrid();
+  document.getElementById('productModal').classList.add('open');
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.remove('open');
+}
+
+async function saveProduct() {
+  const name     = document.getElementById('pName').value.trim();
+  const category = document.getElementById('pCategory').value;
+  const price    = parseFloat(document.getElementById('pPrice').value);
+  const oldPrice = parseFloat(document.getElementById('pOldPrice').value) || null;
+  const stock    = parseInt(document.getElementById('pStock').value);
+  const desc     = document.getElementById('pDesc').value.trim();
+  const editId   = document.getElementById('editId').value;
+
+  if (!name || !category || !price || isNaN(stock)) {
+    adminToast('⚠️ Please fill all required fields'); return;
+  }
+  if (!currentImages.length) {
+    adminToast('⚠️ Please add at least one image'); return;
+  }
+
+  const data = { name, category, price, oldPrice, stock, description:desc, images:currentImages };
+
+  if (db) {
+    try {
+      const { collection, addDoc, doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+      if (editId) {
+        await updateDoc(doc(db,'products',editId), data);
+        allProducts = allProducts.map(p => p.id===editId ? {id:editId,...data} : p);
+      } else {
+        const ref = await addDoc(collection(db,'products'), data);
+        allProducts.push({id:ref.id,...data});
+      }
+    } catch(e) {
+      if (editId) allProducts = allProducts.map(p => p.id===editId ? {id:editId,...data} : p);
+      else allProducts.push({id:'p'+Date.now(),...data});
+    }
+  } else {
+    if (editId) allProducts = allProducts.map(p => p.id===editId ? {id:editId,...data} : p);
+    else allProducts.push({id:'p'+Date.now(),...data});
+  }
+
+  closeProductModal();
+  renderProducts();
+  renderDashboard();
+  adminToast(editId ? '✓ Product updated!' : '✓ Product added!');
+}
+
+async function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  allProducts = allProducts.filter(p => p.id!==id);
+  if (db) {
+    try {
+      const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+      await deleteDoc(doc(db,'products',id));
+    } catch(e) {}
+  }
+  renderProducts();
+  adminToast('🗑️ Product deleted');
+}
+
+// ================================================================
+// ORDERS
+// ================================================================
+function renderOrders(statusFilter) {
+  let orders = allOrders;
+  if (statusFilter) orders = orders.filter(o=>o.status===statusFilter);
+  document.getElementById('ordersTbl').innerHTML = orders.length
+    ? orders.map(o=>`<tr>
+        <td><strong>${o.orderNumber}</strong></td>
+        <td>${o.customer?.name}</td>
+        <td>${o.customer?.phone}</td>
+        <td>${o.items?.map(i=>`${i.name} ×${i.qty}`).join(', ')}</td>
+        <td><strong style="color:var(--g1);">${o.total} EGP</strong></td>
+        <td>${new Date(o.timestamp).toLocaleDateString('en-GB')}</td>
+        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+        <td>
+          <select class="form-select" style="padding:4px 8px;font-size:12px;width:auto;" onchange="updateOrderStatus('${o.id}',this.value)">
+            <option value="new" ${o.status==='new'?'selected':''}>New</option>
+            <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
+            <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
+            <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+            <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
+          </select>
+        </td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#9ca3af;">No orders yet</td></tr>';
+}
+
+function filterOrders(status) { renderOrders(status); }
+
+async function updateOrderStatus(id, status) {
+  allOrders = allOrders.map(o => o.id===id ? {...o,status} : o);
+  if (db) {
+    try {
+      const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+      await updateDoc(doc(db,'orders',id), {status});
+    } catch(e) {}
+  }
+  renderDashboard();
+  adminToast('✓ Order status updated');
+}
+
+// ================================================================
+// RETURNS
+// ================================================================
+function renderReturns() {
+  document.getElementById('returnsTbl').innerHTML = allReturns.length
+    ? allReturns.map(r=>`<tr>
+        <td><span class="badge ${r.type==='exchange'?'badge-new':'badge-processing'}">${r.type}</span></td>
+        <td>${r.name}</td><td>${r.phone}</td><td>${r.orderNumber}</td>
+        <td>${r.reason||'—'}</td>
+        <td>${new Date(r.timestamp).toLocaleDateString('en-GB')}</td>
+        <td><span class="badge badge-${r.status==='pending'?'pending':'resolved'}">${r.status}</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="resolveReturn('${r.id}')">✓ Resolve</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#9ca3af;">No return requests</td></tr>';
+}
+
+async function resolveReturn(id) {
+  allReturns = allReturns.map(r => r.id===id ? {...r,status:'resolved'} : r);
+  if (db) {
+    try {
+      const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+      await updateDoc(doc(db,'returnRequests',id), {status:'resolved'});
+    } catch(e) {}
+  }
+  renderReturns(); renderDashboard();
+  adminToast('✓ Return marked as resolved');
+}
+
+// ================================================================
+// REVIEWS
+// ================================================================
+function renderReviews() {
+  document.getElementById('reviewsTbl').innerHTML = allReviews.length
+    ? allReviews.map(r=>`<tr>
+        <td><strong>${r.name}</strong></td>
+        <td style="max-width:300px;">${r.text}</td>
+        <td>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</td>
+        <td>${new Date(r.timestamp).toLocaleDateString('en-GB')}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteReview('${r.id}')">🗑️ Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">No reviews yet</td></tr>';
+}
+
+async function deleteReview(id) {
+  if (!confirm('Delete this review?')) return;
+  allReviews = allReviews.filter(r => r.id!==id);
+  if (db) {
+    try {
+      const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+      await deleteDoc(doc(db,'reviews',id));
+    } catch(e) {}
+  }
+  renderReviews();
+  adminToast('🗑️ Review deleted');
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+const sections = {dashboard:'Dashboard',products:'Products',orders:'Orders',returns:'Returns & Exchanges',reviews:'Customer Reviews'};
+function showSection(id) {
+  document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelector(`[onclick="showSection('${id}')"]`).classList.add('active');
+  document.getElementById('pageTitle').textContent = sections[id];
+  document.getElementById('topActionBtn').style.display = id==='products' ? 'flex' : 'none';
+}
+
+// ================================================================
+// TOAST
+// ================================================================
+function adminToast(msg) {
+  const t = document.getElementById('adminToast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

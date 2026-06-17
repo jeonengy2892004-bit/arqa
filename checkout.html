@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArQa — Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --gold:        #B8965A;
+  --gold-light:  #D4AF7A;
+  --gold-dim:    rgba(184,150,90,0.12);
+  --gold-border: rgba(184,150,90,0.25);
+  --black:       #0f0f0f;
+  --off-black:   #1a1a1a;
+  --gray:        #6b6b6b;
+  --light-gray:  #f5f5f5;
+  --white:       #ffffff;
+  --red:         #c0392b;
+  --green:       #27ae60;
+  --grad:        linear-gradient(135deg, #B8965A 0%, #D4AF7A 100%);
+  --g1:          #B8965A;
+  --g2:          #B8965A;
+  --g3:          #8a6e3a;
+  --mauve-light: #fafaf8;
+  --mauve-border: rgba(184,150,90,0.2);
+}
+
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Inter', sans-serif;
+  background:var(--white);
+  color:var(--black);
+  min-height:100vh;
+  font-weight:300;
+  letter-spacing:0.01em;
+}
+
+/* ── ANNOUNCEMENT BAR ── */
+.announcement-bar {
+  background:var(--white);
+  color:var(--black);
+  text-align:center;
+  padding:11px 20px;
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  overflow:hidden;
+  border-bottom:1px solid #e8e8e8;
+}
+.announcement-bar .scroll-text {
+  display:inline-flex; gap:80px;
+  animation:marquee 24s linear infinite; white-space:nowrap;
+}
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── HEADER ── */
+header {
+  background:rgba(255,255,255,0.97);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid #e8e8e8;
+  position:sticky; top:0; z-index:100;
+}
+.header-inner {
+  max-width:1200px; margin:0 auto; padding:0 32px; height:68px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+
+/* Brand name */
+.brand-name {
+  font-family:'Cormorant Garamond', serif;
+  font-size:28px; font-weight:700;
+  letter-spacing:8px; text-transform:uppercase;
+  color:var(--black); text-decoration:none;
+  background:none; -webkit-text-fill-color:var(--black);
+}
+
+.back-link {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--gray); text-decoration:none;
+  font-weight:400; letter-spacing:1px; text-transform:uppercase;
+  transition:color 0.2s;
+}
+.back-link:hover { color:var(--gold); }
+
+/* ── CHECKOUT TITLE BAR ── */
+.checkout-title-bar {
+  max-width:1200px; margin:0 auto; padding:28px 32px 0;
+  display:flex; align-items:center; gap:12px;
+}
+.checkout-title-bar h1 {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(22px, 3vw, 30px);
+  font-weight:700; letter-spacing:4px; text-transform:uppercase;
+  color:var(--black);
+}
+
+/* ── MAIN GRID ── */
+.checkout-grid {
+  max-width:1200px; margin:28px auto 72px;
+  padding:0 32px;
+  display:grid;
+  grid-template-columns:1fr 380px;
+  gap:24px;
+  align-items:start;
+}
+@media(max-width:900px) {
+  .checkout-grid { grid-template-columns:1fr; }
+  .order-summary-col { order:-1; }
+}
+
+/* ── CARD ── */
+.card {
+  background:white;
+  border-radius:0;
+  padding:32px;
+  border:1px solid #e8e8e8;
+  box-shadow:none;
+}
+.card-title {
+  font-size:11px; font-weight:500; letter-spacing:4px; text-transform:uppercase;
+  color:var(--black); margin-bottom:28px;
+  display:flex; align-items:center; gap:8px;
+}
+
+/* ── FORM ── */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:600px){ .form-row{ grid-template-columns:1fr; } }
+
+.field { margin-bottom:16px; }
+.field label {
+  display:block; font-size:11px; font-weight:500;
+  color:var(--black); margin-bottom:8px;
+  letter-spacing:1px; text-transform:uppercase;
+}
+.field label span { color:var(--red); }
+.field label small { font-size:10px; color:var(--red); font-weight:400; margin-left:4px; }
+
+.field input,
+.field select,
+.field textarea {
+  width:100%; padding:12px 14px;
+  border:1px solid #d0d0d0; border-radius:0;
+  font-size:13px; font-family:'Inter', sans-serif;
+  color:var(--black); background:#fafafa;
+  outline:none; transition:border 0.2s;
+  appearance:none; font-weight:300;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-dim);
+}
+.field select {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%236b6b6b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center; padding-right:40px;
+  cursor:pointer;
+}
+.field textarea { resize:vertical; min-height:80px; }
+
+/* ── COD BADGE ── */
+.cod-badge {
+  display:flex; align-items:center; gap:10px;
+  background:var(--gold-dim);
+  border:1px solid var(--gold-border);
+  border-radius:0; padding:12px 16px;
+  font-size:11px; color:var(--off-black);
+  font-weight:400; letter-spacing:0.5px;
+  margin-bottom:20px;
+}
+
+/* ── PLACE ORDER BTN ── */
+.place-order-btn {
+  width:100%; padding:15px;
+  background:var(--black); color:white;
+  border:none; border-radius:0;
+  font-size:11px; font-weight:500;
+  letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all 0.2s;
+  margin-top:8px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.place-order-btn:hover { background:var(--gold); }
+.place-order-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+/* ── ORDER SUMMARY ── */
+.summary-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 0; border-bottom:1px solid #f0f0f0;
+}
+.summary-item:last-of-type { border-bottom:none; }
+
+.summary-item-img {
+  width:56px; height:56px; border-radius:0;
+  object-fit:cover; background:var(--light-gray);
+  flex-shrink:0; border:1px solid #e8e8e8;
+}
+.summary-item-info { flex:1; }
+.summary-item-name {
+  font-size:12px; font-weight:400; margin-bottom:2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;
+  letter-spacing:0.3px;
+}
+.summary-item-qty { font-size:11px; color:var(--gray); letter-spacing:0.3px; }
+.summary-item-price { font-size:13px; font-weight:500; color:var(--gold); white-space:nowrap; }
+
+.summary-item-remove {
+  width:26px; height:26px; border-radius:0;
+  border:1px solid #e0e0e0; background:none;
+  color:var(--gray); cursor:pointer; font-size:11px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all 0.2s;
+}
+.summary-item-remove:hover { border-color:var(--red); color:var(--red); }
+
+.summary-divider { height:1px; background:#e8e8e8; margin:12px 0; }
+
+.summary-row {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:12px; color:var(--gray); margin-bottom:8px; letter-spacing:0.3px;
+}
+.summary-total {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:13px; font-weight:500; padding-top:12px;
+  border-top:1px solid #e8e8e8; margin-top:4px;
+  letter-spacing:1px; text-transform:uppercase;
+}
+.summary-total span:last-child { color:var(--gold); font-size:18px; font-weight:500; }
+
+.free-shipping-note {
+  font-size:10px; color:var(--green);
+  text-align:center; margin-top:8px;
+  font-weight:400; letter-spacing:1px; text-transform:uppercase;
+}
+
+/* ── EMPTY CART ── */
+.empty-cart { text-align:center; padding:40px 20px; }
+.empty-cart-icon { font-size:40px; margin-bottom:12px; opacity:0.5; }
+
+/* ── SUCCESS OVERLAY ── */
+.success-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.5); z-index:500;
+  align-items:center; justify-content:center; padding:20px;
+}
+.success-overlay.show { display:flex; }
+
+.success-card {
+  background:white; border-radius:0; padding:52px 40px;
+  max-width:420px; width:100%; text-align:center;
+  border:1px solid #e8e8e8;
+  animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn { from{transform:scale(0.88);opacity:0} to{transform:scale(1);opacity:1} }
+
+.success-icon {
+  font-size:56px; margin-bottom:16px;
+  animation:bounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+}
+@keyframes bounce { from{transform:scale(0)} to{transform:scale(1)} }
+
+.success-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:28px; font-weight:700;
+  letter-spacing:4px; text-transform:uppercase;
+  margin-bottom:10px; color:var(--black);
+}
+.success-text {
+  font-size:13px; color:var(--gray); line-height:1.8;
+  margin-bottom:20px; font-weight:300;
+}
+.success-order-num {
+  background:var(--gold-dim); border:1px solid var(--gold-border);
+  border-radius:0; padding:12px 20px;
+  font-size:13px; font-weight:500; color:var(--gold);
+  letter-spacing:2px; margin-bottom:24px; display:inline-block;
+  text-transform:uppercase;
+}
+.continue-btn {
+  display:inline-block; padding:14px 40px;
+  background:var(--black); color:white;
+  border:none; border-radius:0;
+  font-size:10px; font-weight:500;
+  letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; text-decoration:none; transition:all 0.2s;
+}
+.continue-btn:hover { background:var(--gold); }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--black); color:white; padding:12px 24px;
+  border-radius:0; font-size:12px; font-weight:400; letter-spacing:1px;
+  z-index:999; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  white-space:nowrap; border-left:3px solid var(--gold);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(40px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+
+.brand-name       { animation:fadeIn 1.4s ease both; }
+.checkout-grid    { animation:fadeUp 0.9s ease 0.15s both; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  .checkout-grid { padding:0 16px; }
+}
+@media(max-width:600px) {
+  .checkout-title-bar { padding:20px 16px 0; }
+  .card { padding:20px 16px; }
+  .header-inner { padding:0 16px; }
+}
+</style>
+
+
+<head>
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+
+
+</head>
+<body>
+
+<div class="announcement-bar">
+  <div class="scroll-text">
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; New Collection In ✨</span>
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; New Collection In ✨</span>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <a href="shop.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Continue Shopping
+    </a>
+    <a href="shop.html" class="brand-name">ArQa</a>
+    <div style="width:140px;"></div>
+  </div>
+</header>
+
+<div class="checkout-title-bar">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+  <h1>Checkout</h1>
+</div>
+
+<div class="checkout-grid">
+
+  <!-- LEFT: DELIVERY DETAILS -->
+  <div>
+    <div class="card">
+      <div class="card-title">📋 Delivery Details</div>
+
+      <div class="cod-badge">
+        💵 Cash on Delivery — Pay when you receive your order
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Full Name <span>*</span></label>
+          <input type="text" id="co_name" placeholder="Your full name">
+        </div>
+        <div class="field">
+          <label>Phone <span>*</span></label>
+          <input type="tel" id="co_phone" placeholder="01XXXXXXXXX">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>WhatsApp Number <span>*</span> <small>(for order confirmation)</small></label>
+        <input type="tel" id="co_whatsapp" placeholder="01XXXXXXXXX">
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Governorate <span>*</span></label>
+          <select id="co_gov">
+            <option value="">اختر المحافظة / Select Governorate</option>
+            <option>Cairo / القاهرة</option>
+            <option>Giza / الجيزة</option>
+            <option>Alexandria / الإسكندرية</option>
+            <option>Dakahlia / الدقهلية</option>
+            <option>Gharbia / الغربية</option>
+            <option>Sharqia / الشرقية</option>
+            <option>Qalyubia / القليوبية</option>
+            <option>Menoufia / المنوفية</option>
+            <option>Beheira / البحيرة</option>
+            <option>Kafr el-Sheikh / كفر الشيخ</option>
+            <option>Damietta / دمياط</option>
+            <option>Port Said / بورسعيد</option>
+            <option>Suez / السويس</option>
+            <option>Ismailia / الإسماعيلية</option>
+            <option>Luxor / الأقصر</option>
+            <option>Aswan / أسوان</option>
+            <option>South Sinai / جنوب سيناء</option>
+            <option>North Sinai / شمال سيناء</option>
+            <option>Matrouh / مطروح</option>
+            <option>Other / أخرى</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>City <span>*</span></label>
+          <input type="text" id="co_city" placeholder="اختر المدينة / Select City">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Street Address <span>*</span> <small>برجاء الكتابة باللغة العربية</small></label>
+        <input type="text" id="co_address" placeholder="العنوان بالعربية" dir="rtl">
+      </div>
+
+      <div class="field">
+        <label>Notes (optional)</label>
+        <textarea id="co_notes" placeholder="Any special instructions..."></textarea>
+      </div>
+
+      <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
+        Place Order
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div class="order-summary-col">
+    <div class="card">
+      <div class="card-title">📦 Order Summary</div>
+      <div id="summaryItems"></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">0 EGP</span></div>
+      <div class="summary-row"><span>Shipping</span><span id="summaryShipping">80 EGP</span></div>
+      <div class="summary-total">
+        <span>Total</span>
+        <span id="summaryTotal">0 EGP</span>
+      </div>
+      <div class="free-shipping-note" id="freeShippingNote" style="display:none;">
+        🎉 You qualify for FREE shipping!
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">💜</div>
+    <div class="success-title">Order Placed!</div>
+    <div class="success-text" id="successText"></div>
+    <div class="success-order-num" id="successOrderNum"></div>
+    <br>
+    <a href="shop.html" class="continue-btn">Continue Shopping →</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script>
+let cart = JSON.parse(localStorage.getItem('arqa_cart') || '[]');
+
+document.addEventListener('DOMContentLoaded', renderSummary);
+
+function renderSummary() {
+  const container = document.getElementById('summaryItems');
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="empty-cart">
+        <div class="empty-cart-icon">🛒</div>
+        <div style="font-size:15px;font-weight:500;margin-bottom:8px;">Cart is empty</div>
+        <a href="shop.html" style="color:var(--g1);font-size:13px;font-weight:500;">← Go Shopping</a>
+      </div>`;
+    document.getElementById('summarySubtotal').textContent = '0 EGP';
+    document.getElementById('summaryShipping').textContent  = '80 EGP';
+    document.getElementById('summaryTotal').textContent     = '80 EGP';
+    return;
+  }
+
+  container.innerHTML = cart.map(item => `
+    <div class="summary-item">
+      <img class="summary-item-img" src="${item.img}" alt="${item.name}"
+           onerror="this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&q=60'">
+      <div class="summary-item-info">
+        <div class="summary-item-name">${item.name}</div>
+        <div class="summary-item-qty">×${item.qty}</div>
+      </div>
+      <div class="summary-item-price">${item.price * item.qty} EGP</div>
+      <button class="summary-item-remove" onclick="removeItem('${item.id}')">✕</button>
+    </div>`).join('');
+
+  const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
+  const shipping  = subtotal >= 900 ? 0 : 80;
+  const total     = subtotal + shipping;
+
+  document.getElementById('summarySubtotal').textContent = `${subtotal} EGP`;
+  document.getElementById('summaryShipping').textContent  = shipping === 0 ? 'FREE 🎉' : `${shipping} EGP`;
+  document.getElementById('summaryTotal').textContent     = `${total} EGP`;
+
+  const note = document.getElementById('freeShippingNote');
+  if (shipping === 0) note.style.display = 'block';
+  else {
+    const needed = 900 - subtotal;
+    note.style.display = 'block';
+    note.textContent = `Add ${needed} EGP more for FREE shipping!`;
+    note.style.color = '#92400e';
+  }
+}
+
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  localStorage.setItem('arqa_cart', JSON.stringify(cart));
+  renderSummary();
+}
+
+async function placeOrder() {
+  const name     = document.getElementById('co_name').value.trim();
+  const phone    = document.getElementById('co_phone').value.trim();
+  const whatsapp = document.getElementById('co_whatsapp').value.trim();
+  const gov      = document.getElementById('co_gov').value;
+  const city     = document.getElementById('co_city').value.trim();
+  const address  = document.getElementById('co_address').value.trim();
+
+  if (!name || !phone || !whatsapp || !gov || !city || !address) {
+    showToast('⚠️ Please fill in all required fields');
+    // Highlight empty fields
+    ['co_name','co_phone','co_whatsapp','co_gov','co_city','co_address'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) el.style.borderColor = '#ef4444';
+      else el.style.borderColor = '';
+    });
+    return;
+  }
+
+  if (!cart.length) { showToast('⚠️ Your cart is empty'); return; }
+
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0"/></svg> Processing...';
+
+  const subtotal = cart.reduce((s,i) => s+i.price*i.qty, 0);
+  const shipping  = subtotal >= 900 ? 0 : 80;
+  const total     = subtotal + shipping;
+  const orderNum  = 'ARQ-' + Date.now().toString(36).toUpperCase();
+
+  const orderData = {
+    orderNumber: orderNum,
+    customer: { name, phone, whatsapp, governorate:gov, city, address,
+                notes: document.getElementById('co_notes').value.trim() },
+    items: cart.map(i => ({ name:i.name, qty:i.qty, price:i.price, subtotal:i.price*i.qty })),
+    subtotal, shipping, total,
+    paymentMethod: 'Cash on Delivery',
+    timestamp: new Date().toISOString(),
+    status: 'new'
+  };
+
+  try { await saveOrderToFirebase(orderData); } catch(e) {}
+  try { await sendOrderEmail(orderData); } catch(e) {}
+
+  // Clear cart
+  cart = [];
+  localStorage.setItem('arqa_cart', JSON.stringify(cart));
+
+  // Show success
+  document.getElementById('successText').innerHTML =
+    `Thank you <strong>${name}</strong>! Your order has been received.<br>We'll contact you on WhatsApp to confirm.<br><br>📞 Expect a call within 2–4 hours.`;
+  document.getElementById('successOrderNum').textContent = `Order # ${orderNum}`;
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+async function saveOrderToFirebase(order) {
+  const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+  const { getFirestore, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+  const cfg = window.ARQA_FIREBASE_CONFIG;
+  if (!cfg || cfg.apiKey === "YOUR_API_KEY") return;
+  const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+  await addDoc(collection(getFirestore(app), 'orders'), order);
+}
+
+async function sendOrderEmail(order) {
+  const ejs = window.ARQA_EMAILJS;
+  if (!ejs || ejs.publicKey === "YOUR_EMAILJS_PUBLIC_KEY") return;
+  const mod = await import('https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js');
+  emailjs.init(ejs.publicKey);
+  const itemsList = order.items.map(i => `${i.name} ×${i.qty} = ${i.subtotal} EGP`).join('\n');
+  await emailjs.send(ejs.serviceId, ejs.templateId_order, {
+    order_number: order.orderNumber,
+    customer_name: order.customer.name,
+    customer_phone: order.customer.phone,
+    customer_whatsapp: order.customer.whatsapp,
+    whatsapp_link: `https://wa.me/2${order.customer.whatsapp.replace(/^0/, '')}`,
+    customer_address: `${order.customer.governorate}, ${order.customer.city}, ${order.customer.address}`,
+    customer_notes: order.customer.notes || 'None',
+    items: itemsList,
+    subtotal: order.subtotal + ' EGP',
+    shipping: order.shipping + ' EGP',
+    total: order.total + ' EGP',
+    
+    
+  });
+
+ 
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

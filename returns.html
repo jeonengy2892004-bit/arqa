@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArQa — Return & Exchange</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="config.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold:        #B8965A;
+    --gold-light:  #D4AF7A;
+    --gold-dim:    rgba(184,150,90,0.10);
+    --gold-border: rgba(184,150,90,0.25);
+    --black:       #0f0f0f;
+    --off-black:   #1a1a1a;
+    --gray:        #6b6b6b;
+    --light-gray:  #f5f5f5;
+    --white:       #ffffff;
+    --red:         #c0392b;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8f8f6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    color: var(--black);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(184,150,90,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(184,150,90,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card {
+    background: white;
+    border-radius: 0;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.07);
+    position: relative;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gray);
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .close-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .lang-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    padding: 5px 12px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-toggle:hover { border-color: var(--gold); color: var(--gold); }
+
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 10px;
+    text-align: center;
+    color: var(--black);
+    -webkit-text-fill-color: var(--black);
+    margin: 28px 0 4px;
+    line-height: 1;
+  }
+
+  .brand-tagline {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .page-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--black);
+    text-align: center;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .type-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .type-btn {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    background: white;
+    color: var(--gray);
+    text-align: center;
+  }
+  .type-btn.active {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+    color: var(--black);
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: var(--black);
+    background: #fafafa;
+    transition: all 0.2s;
+    outline: none;
+    font-weight: 300;
+    appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder { color: #b0b0b0; }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--gold);
+    background: white;
+    box-shadow: 0 0 0 3px var(--gold-dim);
+  }
+
+  .reason-group { margin-bottom: 20px; }
+  .reason-options { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .reason-chip {
+    padding: 8px 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray);
+    background: white;
+  }
+  .reason-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--black); }
+  .reason-chip:hover { border-color: var(--gold); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--black);
+    color: white;
+    border: none;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .submit-btn:hover { background: var(--gold); }
+
+  .policy-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: var(--gray);
+    border: 1px solid #e0e0e0;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none;
+  }
+  .policy-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--black);
+    border: 1px solid var(--gold-border);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: white;
+    margin: 0 auto 20px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+
+  .success-text {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .back-shop-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-shop-link:hover { color: var(--black); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--black); color: white; padding: 12px 24px;
+    border-radius: 0; font-size: 12px; letter-spacing: 1px;
+    z-index: 999; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap; border-left: 3px solid var(--gold);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  body[dir="rtl"] .close-btn { left: auto; right: 20px; }
+  body[dir="rtl"] .lang-toggle { right: auto; left: 20px; }
+
+  @media (max-width: 480px) {
+    .card { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body id="pageBody">
+
+<div class="card" id="mainForm">
+
+  <a href="index.html" class="close-btn">✕</a>
+
+  <button class="lang-toggle" onclick="toggleLang()">
+    🌐 <span id="langLabel">العربية</span>
+  </button>
+
+  <div class="brand-name">ArQa</div>
+  <div class="brand-tagline">
+    <span class="en-text">Curated Accessories</span>
+    <span class="ar-text" style="display:none">إكسسوارات مختارة بعناية</span>
+  </div>
+
+  <div class="page-title" id="pageTitle">
+    <span class="en-text">Return or Exchange Request</span>
+    <span class="ar-text" style="display:none">طلب استرجاع أو استبدال</span>
+  </div>
+
+  <div class="type-toggle">
+    <button class="type-btn active" id="returnBtn" onclick="setType('return')">
+      <span class="en-text">↩ Return</span>
+      <span class="ar-text" style="display:none">↩ استرجاع</span>
+    </button>
+    <button class="type-btn" id="exchangeBtn" onclick="setType('exchange')">
+      <span class="en-text">🔄 Exchange</span>
+      <span class="ar-text" style="display:none">🔄 استبدال</span>
+    </button>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span class="en-text">Full Name <span style="color:var(--red)">*</span></span>
+      <span class="ar-text" style="display:none">الاسم الكامل <span style="color:var(--red)">*</span></span>
+    </label>
+    <input type="text" id="fullName" placeholder="Your name">
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span class="en-text">Phone Number <span style="color:var(--red)">*</span></span>
+      <span class="ar-text" style="display:none">رقم الهاتف <span style="color:var(--red)">*</span></span>
+    </label>
+    <input type="tel" id="phone" placeholder="01XXXXXXXXX">
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span class="en-text">Order Number <span style="color:var(--red)">*</span></span>
+      <span class="ar-text" style="display:none">رقم الطلب <span style="color:var(--red)">*</span></span>
+    </label>
+    <input type="text" id="orderNumber" placeholder="# ABC123">
+  </div>
+
+  <div class="reason-group">
+    <label>
+      <span class="en-text">Reason</span>
+      <span class="ar-text" style="display:none">السبب</span>
+    </label>
+    <div class="reason-options" id="reasonOptions">
+      <span class="reason-chip" onclick="selectReason(this)">Wrong size</span>
+      <span class="reason-chip" onclick="selectReason(this)">Damaged item</span>
+      <span class="reason-chip" onclick="selectReason(this)">Wrong item</span>
+      <span class="reason-chip" onclick="selectReason(this)">Changed mind</span>
+      <span class="reason-chip" onclick="selectReason(this)">Other</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span class="en-text">Additional Notes (optional)</span>
+      <span class="ar-text" style="display:none">ملاحظات إضافية (اختياري)</span>
+    </label>
+    <textarea id="notes" rows="3" placeholder="Any additional details..."></textarea>
+  </div>
+
+  <button class="submit-btn" onclick="submitRequest()">
+    <span class="en-text">Send Request</span>
+    <span class="ar-text" style="display:none">إرسال الطلب</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+  </button>
+
+  <a href="return-policy.html" class="policy-btn">
+    <span class="en-text">📋 See Our Return Policy</span>
+    <span class="ar-text" style="display:none">📋 سياسة الاسترجاع والاستبدال</span>
+  </a>
+
+</div>
+
+<!-- Success State -->
+<div class="card success-state" id="successCard">
+  <div class="success-icon">✓</div>
+  <div class="success-title" id="successTitle">Request Sent</div>
+  <div class="success-text" id="successText">
+    Your request has been received.<br>
+    We'll contact you within 24–48 hours.<br><br>
+    <strong>Thank you for shopping with ArQa.</strong>
+  </div>
+  <a href="shop.html" class="back-shop-link">← Back to Shop</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let selectedReason = '';
+let requestType = 'return';
+let isArabic = false;
+
+function setType(type) {
+  requestType = type;
+  document.getElementById('returnBtn').classList.toggle('active', type === 'return');
+  document.getElementById('exchangeBtn').classList.toggle('active', type === 'exchange');
+}
+
+function selectReason(el) {
+  document.querySelectorAll('.reason-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedReason = el.textContent.trim();
+}
+
+async function submitRequest() {
+  const name  = document.getElementById('fullName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const order = document.getElementById('orderNumber').value.trim();
+
+  if (!name || !phone || !order) {
+    showToast(isArabic ? '⚠️ من فضلك أكمل جميع الحقول المطلوبة' : '⚠️ Please fill in all required fields');
+    ['fullName','phone','orderNumber'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) el.style.borderColor = '#ef4444';
+      else el.style.borderColor = '';
+    });
+    return;
+  }
+
+  const requestData = {
+    type: requestType,
+    name, phone,
+    orderNumber: order,
+    reason: selectedReason,
+    notes: document.getElementById('notes').value.trim(),
+    timestamp: new Date().toISOString(),
+    status: 'pending'
+  };
+
+  saveReturnRequest(requestData);
+
+  try {
+    const ejs = window.ARQA_EMAILJS;
+    if (ejs && ejs.publicKey !== "YOUR_EMAILJS_PUBLIC_KEY") {
+      emailjs.init(ejs.publicKey);
+      await emailjs.send(ejs.serviceId, ejs.templateId_return, {
+        to_email:       window.ARQA_OWNER_EMAIL,
+        request_type:   requestType === 'return' ? '↩ Return' : '🔄 Exchange',
+        customer_name:  name,
+        customer_phone: phone,
+        whatsapp_link:  `https://wa.me/2${phone.replace(/^0/, '')}`,
+        order_number:   order,
+        reason:         selectedReason || '—',
+        notes:          document.getElementById('notes').value.trim() || '—',
+        request_date:   new Date().toLocaleDateString('en-EG', {
+                          year:'numeric', month:'long', day:'numeric',
+                          hour:'2-digit', minute:'2-digit'
+                        }),
+      });
+    }
+  } catch(e) { console.log('Email error:', e); }
+
+  document.getElementById('mainForm').style.display = 'none';
+  document.getElementById('successCard').style.display = 'block';
+}
+
+async function saveReturnRequest(data) {
+  try {
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+    const { getFirestore, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+    const cfg = window.ARQA_FIREBASE_CONFIG;
+    if (!cfg) return;
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg, 'returns-app');
+    await addDoc(collection(getFirestore(app), 'returnRequests'), data);
+  } catch(e) { console.log('Firebase:', e); }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function toggleLang() {
+  isArabic = !isArabic;
+  document.getElementById('langLabel').textContent = isArabic ? 'English' : 'العربية';
+  document.querySelectorAll('.en-text').forEach(el => el.style.display = isArabic ? 'none' : '');
+  document.querySelectorAll('.ar-text').forEach(el => el.style.display = isArabic ? 'inline' : 'none');
+  document.getElementById('pageBody').dir = isArabic ? 'rtl' : 'ltr';
+
+  if (isArabic) {
+    document.getElementById('fullName').placeholder = 'اسمك';
+    document.getElementById('phone').placeholder = '01XXXXXXXXX';
+    document.getElementById('orderNumber').placeholder = '# رقم الطلب';
+    const reasons = ['مقاس خاطئ', 'منتج تالف', 'منتج مختلف', 'تغيير الرأي', 'أخرى'];
+    document.querySelectorAll('.reason-chip').forEach((c, i) => c.textContent = reasons[i] || c.textContent);
+  } else {
+    document.getElementById('fullName').placeholder = 'Your name';
+    document.getElementById('phone').placeholder = '01XXXXXXXXX';
+    document.getElementById('orderNumber').placeholder = '# ABC123';
+    const reasons = ['Wrong size', 'Damaged item', 'Wrong item', 'Changed mind', 'Other'];
+    document.querySelectorAll('.reason-chip').forEach((c, i) => c.textContent = reasons[i] || c.textContent);
+  }
+}
+</script>
+</body>
+</html>

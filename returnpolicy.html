@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArQa — Return & Exchange Policy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold:        #B8965A;
+  --gold-light:  #D4AF7A;
+  --gold-dim:    rgba(184,150,90,0.10);
+  --gold-border: rgba(184,150,90,0.25);
+  --black:       #0f0f0f;
+  --off-black:   #1a1a1a;
+  --gray:        #6b6b6b;
+  --light-gray:  #f5f5f5;
+  --white:       #ffffff;
+  --red:         #c0392b;
+  --green:       #27ae60;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+/* ── ANNOUNCEMENT BAR ── */
+.announcement-bar {
+  background: var(--white);
+  color: var(--black);
+  text-align: center;
+  padding: 11px 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  overflow: hidden;
+  border-bottom: 1px solid #e8e8e8;
+}
+.announcement-bar .scroll-text {
+  display: inline-flex;
+  gap: 80px;
+  animation: marquee 24s linear infinite;
+  white-space: nowrap;
+}
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #e8e8e8;
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700;
+  letter-spacing: 8px; text-transform: uppercase;
+  color: var(--black); text-decoration: none;
+  -webkit-text-fill-color: var(--black);
+}
+.back-link {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--gray); text-decoration: none;
+  font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--gold); }
+.back-link svg { transition: transform 0.2s; }
+.back-link:hover svg { transform: translateX(-3px); }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  background: var(--black);
+  padding: 64px 32px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(184,150,90,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(184,150,90,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.page-hero-label {
+  font-size: 9px; letter-spacing: 6px; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 14px; font-weight: 400;
+}
+.page-hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700; letter-spacing: 8px; text-transform: uppercase;
+  color: var(--white); margin-bottom: 14px;
+}
+.page-hero-sub {
+  font-size: 12px; color: rgba(255,255,255,0.45);
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 300;
+}
+
+/* ── GOLD DIVIDER LINE ── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+/* ── MAIN CONTENT ── */
+.policy-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+}
+
+/* ── SECTION BLOCK ── */
+.policy-block {
+  margin-bottom: 52px;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.policy-block.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.block-icon {
+  width: 40px; height: 40px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.block-title {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--black);
+}
+
+.block-body {
+  padding-left: 54px;
+}
+
+.block-body p {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.9;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+
+/* ── LIST ITEMS ── */
+.policy-list {
+  list-style: none;
+  margin-top: 4px;
+}
+.policy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.policy-list li:last-child { border-bottom: none; }
+
+.list-dot {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 0;
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+
+/* red dot for non-returnable */
+.list-dot.red { background: var(--red); }
+
+/* ── CTA BLOCK ── */
+.cta-block {
+  background: var(--black);
+  padding: 40px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 16px;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+}
+.cta-block.visible { opacity: 1; transform: none; }
+.cta-block::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(184,150,90,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-label {
+  font-size: 9px; letter-spacing: 5px; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.cta-handle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700;
+  letter-spacing: 4px; color: var(--white);
+  margin-bottom: 20px;
+}
+.cta-btn {
+  display: inline-block;
+  padding: 13px 36px;
+  background: var(--gold);
+  color: var(--white);
+  border: none;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer; transition: background 0.2s;
+}
+.cta-btn:hover { background: var(--gold-light); }
+
+/* ── RETURN BTN BOTTOM ── */
+.bottom-action {
+  text-align: center;
+  padding: 48px 32px 0;
+}
+.return-request-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 44px;
+  background: var(--black); color: var(--white);
+  border: none; border-radius: 0;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; transition: background 0.2s;
+}
+.return-request-btn:hover { background: var(--gold); }
+.bottom-note {
+  margin-top: 14px;
+  font-size: 10px; color: var(--gray);
+  letter-spacing: 1px; text-transform: uppercase;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  padding: 28px 32px;
+  text-align: center;
+}
+.footer-bottom {
+  font-size: 10px; color: #999;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .header-inner { padding: 0 16px; }
+  .policy-wrapper { padding: 40px 16px 72px; }
+  .block-body { padding-left: 0; }
+  .page-hero { padding: 48px 20px 40px; }
+  .cta-block { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement-bar">
+  <div class="scroll-text">
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; Returns within 7 days ✨</span>
+    <span>✨ Free Shipping on orders above 900 EGP &nbsp;·&nbsp; Cash on Delivery Available &nbsp;·&nbsp; Returns within 7 days ✨</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="shop.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Shop
+    </a>
+    <a href="index.html" class="brand-name">ArQa</a>
+    <div style="width: 120px;"></div>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-label">ArQa — Customer Care</div>
+  <div class="page-hero-title">Return & Exchange Policy</div>
+  <div class="page-hero-sub">Everything you need to know</div>
+</div>
+<div class="gold-line"></div>
+
+<!-- POLICY CONTENT -->
+<div class="policy-wrapper">
+
+  <!-- Time Frame -->
+  <div class="policy-block">
+    <div class="block-header">
+      <div class="block-icon">⏰</div>
+      <div class="block-title">Time Frame</div>
+    </div>
+    <div class="block-body">
+      <p>Returns and exchanges are accepted within <strong>7 days</strong> from the delivery date. Requests submitted after this window will not be processed.</p>
+    </div>
+  </div>
+
+  <!-- Accepted Conditions -->
+  <div class="policy-block">
+    <div class="block-header">
+      <div class="block-icon">✅</div>
+      <div class="block-title">Accepted Conditions</div>
+    </div>
+    <div class="block-body">
+      <ul class="policy-list">
+        <li><span class="list-dot"></span><span>Item must be unused and in original condition</span></li>
+        <li><span class="list-dot"></span><span>Original packaging must be intact</span></li>
+        <li><span class="list-dot"></span><span>Tags must still be attached</span></li>
+        <li><span class="list-dot"></span><span>Item must not be damaged by the customer</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Non-Returnable -->
+  <div class="policy-block">
+    <div class="block-header">
+      <div class="block-icon">❌</div>
+      <div class="block-title">Non-Returnable Items</div>
+    </div>
+    <div class="block-body">
+      <ul class="policy-list">
+        <li><span class="list-dot red"></span><span>Customized or personalized items</span></li>
+        <li><span class="list-dot red"></span><span>Items purchased on final sale</span></li>
+        <li><span class="list-dot red"></span><span>Earrings (for hygiene reasons)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Refund Process -->
+  <div class="policy-block">
+    <div class="block-header">
+      <div class="block-icon">💰</div>
+      <div class="block-title">Refund Process</div>
+    </div>
+    <div class="block-body">
+      <p>Refunds are processed within <strong>5–10 business days</strong> after we receive the item. Shipping costs are non-refundable unless the item was defective or incorrect.</p>
+    </div>
+  </div>
+
+  <!-- Shipping -->
+  <div class="policy-block">
+    <div class="block-header">
+      <div class="block-icon">📦</div>
+      <div class="block-title">Shipping</div>
+    </div>
+    <div class="block-body">
+      <p>For <strong>exchanges</strong>, ArQa covers the shipping cost of the replacement item. For <strong>returns</strong> due to customer preference, the customer covers return shipping.</p>
+    </div>
+  </div>
+
+  <!-- Contact — CTA Block -->
+  <div class="cta-block" id="ctaBlock">
+    <div class="cta-label">📞 Need Help?</div>
+    <div class="cta-handle">@arqa</div>
+    <a href="https://www.instagram.com/webgy_?igsh=ZHFqcWhmeWtzOWMy&utm_source=qr" target="_blank" class="cta-btn">
+      Reach Us on Instagram
+    </a>
+  </div>
+
+  <!-- Bottom Action -->
+  <div class="bottom-action">
+    <a href="returns.html" class="return-request-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      Start a Return or Exchange
+    </a>
+    <div class="bottom-note">Takes less than 2 minutes</div>
+  </div>
+
+</div>
+
+<div class="gold-line"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bottom">© 2026 ArQa · Developed by @engy_mostaffa   </div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.policy-block, .cta-block');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
